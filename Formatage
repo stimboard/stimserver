@@ -1,0 +1,23 @@
+Formatage
+
+{
+	id: ,
+	title:,
+	allDay:,
+	start:,
+	end:,
+	url:,
+	className:,
+	editable:false,
+	startEditable:false,
+	durationEditable:false,
+
+}
+
+
+
+{
+	nom:"Emmanuel",
+	classe:"IT3"
+}
+

@@ -23,22 +23,6 @@
 //   	// stdnum is an int
 //   	// stdnum = parseInt(stdnum);
 
-//   	// SQL Request
-//   	var sql = 'SELECT * FROM ?? WHERE ?? = ?';
-//     var inserts = ['students', 'stdnum', connection.escape(stdnum)];
-//     sql = mysql.format(sql, inserts);
-  	
-//   	connection.connect(function(err){
-//   		if(err != null) res.end("Connection error: " + err);
-//   	});
-
-//   	connection.query(sql, function(err, rows){
-//   		if(err != null) {
-//   			res.end("Query error: " + err)
-//   		}else{
-//   			console.log(rows);
-//   		}
-//   	});
 //   });
 
 // });
@@ -48,18 +32,29 @@
 // });
 
 var net = require('net');
+Object.size = function(arr) 
+{
+    var size = 0;
+    for (var key in arr) 
+    {
+        if (arr.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
 
-var HOST = '10.230.130.60';
 var PORT = 6969;
-
+var sockets = {};
 
 
 // Create a server instance, and chain the listen function to it
 // The function passed to net.createServer() becomes the event handler for the 'connection' event
 // The socket object the callback function receives UNIQUE for each connection
-net.createServer(function(socket) {
-
+var server = net.createServer(function(socket) {
+    var id = socket.remoteAddress + '' + socket.remotePort;
+    sockets[id] = socket;
+    console.log(Object.size(sockets));
     socket.setEncoding("utf-8");
+    
     // Send a data on the socket
     var sendData = function(){
         socket.write(data + '\n', 'UTF-8', function(){
@@ -67,34 +62,26 @@ net.createServer(function(socket) {
         });    
     };
 
-    var fetchData = function(data){        
-        // Parse to delete control characters
-        for(var i = 0; i<data.length;i++){
-            if (data[i] == '{'){
-                data = data.slice(i, data.length);
-                break;
-            }
-        }
-        return JSON.parse(data);
-    }
-
     // We have a connection - a socket object is assigned to the connection automatically
-    console.log('CONNECTED: ' + socket.remoteAddress +':'+ socket.remotePort);
+    console.log('CONNECTED: ' + id);
     
     // Add a 'data' event handler to t his instance of socket
-    socket.on('data', function(data) {
-        console.log("DATA BRUT : " + data);
-        data = fetchData(data);
-        console.log("RESULT : " + data);
+    socket.on('data', function(data) { 
+        console.log("Receiving message ..");
+        console.log("DATA BRUT : " + data + ' length: ' + data.length);
+        data = JSON.parse(data.trim());
+        console.log("RESULT : " + data.id.stnb);
     });
     
     // Add a 'close' event handler to this instance of socket
     socket.on('close', function() {
-        console.log('CLOSED: ' + users[id].remoteAddress + ':' + users[id].remotePort);
-        delete users[id];
-        console.log(users.length);
+        delete(sockets[id]);
+        console.log(Object.size(sockets));
+        console.log('CLOSED: ' + id);
     });   
 
-}).listen(PORT, HOST);
+}).listen(PORT);
 
-console.log('Server listening on ' + HOST +':'+ PORT);
+address = server.address();
+address = address.address;
+console.log("Server listening on " + address );
