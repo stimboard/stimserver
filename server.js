@@ -2,6 +2,7 @@ var net = require('net');
 var mysql = require('mysql');
 var fs = require('fs');
 var config = require('./config/global.js');
+var http = require('http');
 
 Object.size = function(arr) 
 {
@@ -64,10 +65,20 @@ var server = net.createServer(function(socket) {
             if(err != null) {
                 res.end("Query error: " + err)
             }else{
-                console.log(config.habilitationCode[rows[0].level]);
-                sendData(config.habilitationCode[rows[0].level]);
+                console.log('HABILITATION CODE: ' + config.habilitationCode[rows[0].level]);
+                console.log("GET ICAL URL... [ work in progress ]");
+                // http.get("http://wapps.univ-reunion.fr/ical/get_diplome_semestre.php?q=" + config.habilitationCode[rows[0].level], function(res) {
+                //   console.log("SUCCESS: " + res.headers);
+                //   res.on('data', function(chunk){
+                //         console.log(chunk);
+                //   });
+
+                // }).on('error', function(e) {
+                //   console.log("Got error: " + e.message);
+                // });
             }
         });
+
     });
     
     // Add a 'close' event handler to this instance of socket
@@ -83,3 +94,4 @@ var server = net.createServer(function(socket) {
 address = server.address();
 address = address.address;
 console.log("Server listening on " + address );
+
