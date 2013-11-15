@@ -1,0 +1,9 @@
+{
+  "name": "ldap-client",
+  "description": "A ldap client that performs simple search filter by student num",
+  "author": "Arnaud Chen-yen-su <arnaud.chenyensu@gmail.com>",
+  "dependencies": {
+    "ldapjs": "*"
+  },
+  "engine": "node >= 0.6"
+}
