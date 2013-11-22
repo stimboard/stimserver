@@ -1,0 +1,19 @@
+{
+  "author": "STIM 14 <stim14@stim.re>",
+  "name": "T8_node_server_projet",
+  "description": "Node JS Server for T8 project",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/laza1618/T8_node_server_projet.git"
+  },
+  "main": "server.js",
+  "dependencies": {
+	"mysql":"*"
+	},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
