@@ -67,7 +67,8 @@ var server = net.createServer(function(socket) {
                 console.log('HABILITATION CODE: ' + config.habilitationCode[rows[0].level]);
                 console.log("GET ICAL URL... [ work in progress ]");
                 var options = {
-                    host: 'http://wapps.univ-reunion.fr/ical/get_diplome_semestre.php?q=' + config.habilitationCode[rows[0].level],
+                    host: 'wapps.univ-reunion.fr',
+		    path: '/ical/get_diplome_semestre.php?q=' + config.habilitationCode[rows[0].level],
                     port: 80
                 };
                 http.get(options, function(res) {
