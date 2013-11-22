@@ -1,17 +1,20 @@
-Formatage
+Formatage d'un créneau en JSON
 
 {
 	id: ,
 	title:,
-	allDay:,
-	start:,
-	end:,
-	url:,
-	className:,
+	allDay: Boolean,
+	start: Date (format ISO8601),
+	end: Date,
+	(url:String,)
+	(className:String/Array,)
 	editable:false,
 	startEditable:false,
 	durationEditable:false,
-
+	color:,
+	backgroundColor:,
+	borderColor:, 
+	textColor:, 
 }
 
 
