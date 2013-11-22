@@ -1,16 +1,14 @@
-// ldapsearch -x -H ldap://ldap.univ.run:389/ -b 'dc=univ-reunion,dc=fr' '(cn=Arnaud Chen-yen-su)'
-// runUnivApoComposante
+// ldapsearch -x -H ldap://ldap.univ.run:389/ -b 'dc=univ-reunion,dc=fr' '(cn=Gangat Yasine)'
 
 var ldap = require('ldapjs');
 var client = ldap.createClient({
-  url: 'ldap://ldap.univ.run:389'
+  url: 'ldap://ldapr.univ.run:389'
 });
 
 num_etud = 29000266;
 
 var opts = {
-  // filter: '(&(cn=Chen-yen-su Arnaud)(runUnivApoComposante=*))',
-  filter: '(supannEtuId=' + num_etud +')',
+  filter: '(supannAliasLogin=' + num_etud + ')',
   scope: 'sub'
 };
 
@@ -21,7 +19,7 @@ result = client.search('ou=People,dc=univ-reunion,dc=fr', opts, function(err, re
 		obj = JSON.parse(json);
     // console.log('entry: ' + JSON.stringify(entry.object));
     // console.log('\n');
-    console.log('runUnivApoComposante: ' + obj.runUnivApoComposante);
+    console.log(obj.supannEtuEtape);
   });
   res.on('searchReference', function(referral) {
     console.log('referral: ' + referral.uris.join());
@@ -33,4 +31,6 @@ result = client.search('ou=People,dc=univ-reunion,dc=fr', opts, function(err, re
     console.log('status: ' + result.status);
   });
 });
+
+
 
