@@ -19,11 +19,11 @@ var sockets = {};
 
 // Connection to the database
 var connection = mysql.createConnection({
-    host: 'localhost',
-    port: 3306,
-    database: 'stimboard',
-    user:'root',
-    password:'root'
+    host: config.db_host,
+    port: config.db_port,
+    database: config.db_name,
+    user: config.db_user,
+    password: config.db_password
 });
 
 connection.connect(function(err){
