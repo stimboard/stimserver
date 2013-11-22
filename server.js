@@ -75,6 +75,9 @@ var server = net.createServer(function(socket) {
                   console.log("RESPONSE: " + res.statusCode);
                   res.on('data', function(chunk){
                         console.log('BODY: ' + chunk);
+                        
+                        var urlIcal = chunck.match(/(<a href=)(.*?)(>)/)[2]
+                		console.log(urlIcal);
                   });
 
                 }).on('error', function(e) {
