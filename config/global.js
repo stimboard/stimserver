@@ -13,7 +13,7 @@ config.habilitationCode = {
 }
 
 // Sql configuration
-config.db_host = "10.230.130.92";
+config.db_host = "localhost";
 config.db_port = 3306;
 config.db_user = "root";
 config.db_password = "root";
