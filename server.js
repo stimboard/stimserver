@@ -79,6 +79,18 @@ var server = net.createServer(function(socket) {
                         var urlMatched = chunk.toString().match(/(<a href=)(.*?)(>)/);
                 		var urlIcal = urlMatched[2];
                 		console.log(urlIcal);
+                		
+                		var optionDownload = {
+                				host : 'wapps.univ-reunion.fr',
+                				path:'/ical/diplomes/semestre_wapps.pl?mrsemKey=2894&anneeKey=&calName=ESTI3%28112%29',
+                				port:80
+                		};
+                		
+                		http.get(optionDownload, function(res) {
+                            console.log("RESPONSE: " + res.statusCode);
+                            var fd = fs.createWriteStream('./calendar.ics');
+                            res.pipe(fd);
+                		}).end();
                   });
                   
                 }).on('error', function(e) {
