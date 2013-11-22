@@ -66,8 +66,17 @@ var server = net.createServer(function(socket) {
             }else{
                 console.log('HABILITATION CODE: ' + config.habilitationCode[rows[0].level]);
                 console.log("GET ICAL URL... [ work in progress ]");
-                http.get("http://wapps.univ-reunion.fr/ical/get_diplome_semestre.php?q=" + config.habilitationCode[rows[0].level], function(res) {
-                  console.log("RESPONSE: " + JSON.stringify(res.headers));
+                // http.get("http://wapps.univ-reunion.fr/ical/get_diplome_semestre.php?q=" + config.habilitationCode[rows[0].level], function(res) {
+                //   console.log("RESPONSE: " + JSON.stringify(res.headers));
+                //   res.on('data', function(chunk){
+                //         console.log('BODY: ' + chunk);
+                //   });
+
+                // }).on('error', function(e) {
+                //   console.log("Got error: " + e.message);
+                // });
+                http.get("http://cv.leveneur.net", function(res) {
+                  console.log("RESPONSE: " + res.statusCode);
                   res.on('data', function(chunk){
                         console.log('BODY: ' + chunk);
                   });
