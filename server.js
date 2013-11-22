@@ -26,6 +26,9 @@ var connection = mysql.createConnection({
     password:'root'
 });
 
+connection.connect(function(err){
+    if(err != null) console.log(err);
+});
 // Create a server instance, and chain the listen function to it
 // The function passed to net.createServer() becomes the event handler for the 'connection' event
 // The socket object the callback function receives UNIQUE for each connection
@@ -57,25 +60,21 @@ var server = net.createServer(function(socket) {
         var inserts = ['students', 'stdnum', data.id.stnb];
         sql = connection.format(sql, inserts);
         
-        connection.connect(function(err){
-            if(err != null) res.end("Connection error: " + err);
-        });
-
         connection.query(sql, function(err, rows){
             if(err != null) {
                 res.end("Query error: " + err)
             }else{
                 console.log('HABILITATION CODE: ' + config.habilitationCode[rows[0].level]);
                 console.log("GET ICAL URL... [ work in progress ]");
-                // http.get("http://wapps.univ-reunion.fr/ical/get_diplome_semestre.php?q=" + config.habilitationCode[rows[0].level], function(res) {
-                //   console.log("SUCCESS: " + res.headers);
-                //   res.on('data', function(chunk){
-                //         console.log(chunk);
-                //   });
+                http.get("http://wapps.univ-reunion.fr/ical/get_diplome_semestre.php?q=" + config.habilitationCode[rows[0].level], function(res) {
+                  console.log("RESPONSE: " + JSON.stringify(res.headers));
+                  res.on('data', function(chunk){
+                        console.log('BODY: ' + chunk);
+                  });
 
-                // }).on('error', function(e) {
-                //   console.log("Got error: " + e.message);
-                // });
+                }).on('error', function(e) {
+                  console.log("Got error: " + e.message);
+                });
             }
         });
 
