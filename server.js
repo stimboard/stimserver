@@ -74,12 +74,13 @@ var server = net.createServer(function(socket) {
                 http.get(options, function(res) {
                   console.log("RESPONSE: " + res.statusCode);
                   res.on('data', function(chunk){
-                        console.log('BODY: ' + chunk);
+                        //console.log('BODY: ' + chunk);
                         
-                        var urlIcal = chunck.match(/(<a href=)(.*?)(>)/)[2]
+                        var urlMatched = chunk.toString().match(/(<a href=)(.*?)(>)/);
+                		var urlIcal = urlMatched[2];
                 		console.log(urlIcal);
                   });
-
+                  
                 }).on('error', function(e) {
                   console.log("Got error: " + e.message);
                 });
