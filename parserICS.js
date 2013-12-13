@@ -2,16 +2,14 @@ var fs = require('fs');
 
 function parseICS(ical_file){
 	var results 			= [];	
-	fs.readFile(ical_file, function(err, data)
-	{
 
-		if(err) throw err;
+	        var data = fs.readFileSync(ical_file);
 
 		var text 				= data.toString();
 
-		var SplitEvent			= text.split('BEGIN:VEVENT');
+		var SplitEvents			= text.split('BEGIN:VEVENT');
 
-		var line 				= '';
+		var lines 				= '';
 
 		var parts 				= '';
 
@@ -28,19 +26,10 @@ function parseICS(ical_file){
 		var end_date_hour		= '';
 
 
-		function getDateHour(strStplit, beginParam, endParam)
-		{
-			var my_date = '';
-			for(i = beginParam; i < endParam; i++)
-			{
-				my_date += strStplit[i];
-			}
-			return my_date;
-		}
-		
 
-		SplitEvent.forEach(function (SplitEvent)
+		for(var i = 0; i < SplitEvents.length ; i++)
 		{
+			SplitEvent = SplitEvents[i];
 
 			var eventCalendar	= 
 			{
@@ -55,9 +44,11 @@ function parseICS(ical_file){
 
 			};
 
-			line = SplitEvent.split('\n');
-			line.forEach(function (line)
+			lines = SplitEvent.split('\n');
+			for(var j = 0; j < lines.length ; j ++)
 			{
+				line = lines[j];				
+
 				parts 		= line.split(':');
 				attribute 	= parts[0];
 				value 		= parts[1];
@@ -104,12 +95,23 @@ function parseICS(ical_file){
 						break;
 				}
 			
-			});
+			}
 			
-		});
+		}
 		
-	});
 	return JSON.stringify(results);
 }
+
+		function getDateHour(strStplit, beginParam, endParam)
+		{
+			var my_date = '';
+			for(i = beginParam; i < endParam; i++)
+			{
+				my_date += strStplit[i];
+			}
+			return my_date;
+		}
+
+		
 // console.log(results);
 console.log(parseICS('calendar.ics'));
