@@ -50,56 +50,59 @@ var server = net.createServer(function(socket) {
     
     // Add a 'data' event handler to t his instance of socket
     socket.on('data', function(data) { 
-        console.log("Receiving message from " + id);
-        console.log("DATA BRUT : " + data + ' length: ' + data.length);
-        data = JSON.parse(data.trim());
-        console.log("RESULT : " + data.id.stnb);
+        sendData("boudoudoudoudoud");
+        // console.log("Receiving message from " + id);
+        // console.log("DATA BRUT : " + data + ' length: ' + data.length);
+        // data = JSON.parse(data.trim());
+        // console.log("RESULT : " + data.id.stnb);
 
-        // SQL Request
-        var sql = 'SELECT * FROM ?? WHERE ?? = ?';
-        var inserts = ['students', 'stdnum', data.id.stnb];
-        sql = connection.format(sql, inserts);
+        // // SQL Request
+        // var sql = 'SELECT * FROM ?? WHERE ?? = ?';
+        // var inserts = ['students', 'stdnum', data.id.stnb];
+        // sql = connection.format(sql, inserts);
         
-        connection.query(sql, function(err, rows){
-            if(err != null) {
-                res.end("Query error: " + err)
-            }else{
-                console.log('HABILITATION CODE: ' + config.habilitationCode[rows[0].level]);
-                console.log("GET ICAL URL... [ work in progress ]");
-                var options = {
-                    host: 'wapps.univ-reunion.fr',
-		    path: '/ical/get_diplome_semestre.php?q=' + config.habilitationCode[rows[0].level],
-                    port: 80
-                };
-                http.get(options, function(res) {
-                  console.log("RESPONSE: " + res.statusCode);
-                  res.on('data', function(chunk){
-                        //console.log('BODY: ' + chunk);
+        // connection.query(sql, function(err, rows){
+        //     if(err != null) {
+        //         res.end("Query error: " + err)
+        //     }else{
+        //         console.log('HABILITATION CODE: ' + config.habilitationCode[rows[0].level]);
+        //         console.log("GET ICAL URL... [ work in progress ]");
+        //         var options = {
+        //             host: 'wapps.univ-reunion.fr',
+		      //       path: '/ical/get_diplome_semestre.php?q=' + config.habilitationCode[rows[0].level],
+        //             port: 80
+        //         };
+        //         http.get(options, function(res) {
+        //           console.log("RESPONSE: " + res.statusCode);
+        //           res.on('data', function(chunk){
+        //                 //console.log('BODY: ' + chunk);
                         
-                        var urlMatched = chunk.toString().match(/(<a href=)(.*?)(>)/);
-                		var urlIcal = urlMatched[2];
-                		console.log(urlIcal);
+        //                 var urlMatched = chunk.toString().match(/(<a href=)(.*?)(>)/);
+        //         		var urlIcal = urlMatched[2];
+        //         		console.log(urlIcal);
+        //         		urlIcal.split
+        //         		var optionDownload = {
+        //         				host : 'wapps.univ-reunion.fr',
+        //         				path:'/ical/diplomes/semestre_wapps.pl?mrsemKey=2894&anneeKey=&calName=ESTI3%28112%29',
+        //         				port:80
+        //         		};
                 		
-                		var optionDownload = {
-                				host : 'wapps.univ-reunion.fr',
-                				path:'/ical/diplomes/semestre_wapps.pl?mrsemKey=2894&anneeKey=&calName=ESTI3%28112%29',
-                				port:80
-                		};
-                		
-                		http.get(optionDownload, function(res) {
-                            console.log("RESPONSE: " + res.statusCode);
-                            var fd = fs.createWriteStream('./calendar.ics');
-                            res.pipe(fd);
-                		}).end();
-                  });
+        //         		http.get(optionDownload, function(res) {
+        //                     console.log("RESPONSE: " + res.statusCode);
+        //                     console.log("GET ICS FILE FOR CODE: " + config.habilitationCode[rows[0].level] + " ... [ work in progress ]");
+        //                     var date = new Date();
+        //                     var fd = fs.createWriteStream('./calendar_' + date.toISOString().split("T")[0] + '.ics');
+        //                     res.pipe(fd);
+        //         		}).end();
+        //           });
                   
-                }).on('error', function(e) {
-                  console.log("Got error: " + e.message);
-                });
-            }
+        //         }).on('error', function(e) {
+        //           console.log("Got error: " + e.message);
+        //         });
+        //     }
         });
 
-    });
+    
     
     // Add a 'close' event handler to this instance of socket
     socket.on('close', function() { 
