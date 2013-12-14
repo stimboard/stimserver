@@ -114,12 +114,6 @@ function icalToJson(ical_file){
     return JSON.stringify(results);
 }
 
-function feeding(i){
-    return function(){
-        
-    };
-}
-
 // List of sockets connected 
 var sockets = {};
 
