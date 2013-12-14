@@ -1,40 +1,42 @@
+/*
+*   getICS.js 
+*   Fetch ics files corresponding to each habilitation code registered in the database,
+*   convert ICS to JSON format and write the result in a file in the json/ folder.
+*/
+
 var net = require('net');
 var mysql = require('mysql');
 var fs = require('fs');
 var config = require('./config/global.js');
 var http = require('http');
 
-var icalToJson = function(ical_file){    
-    var line                = '';
-    var parts               = '';
-    var attribute           = '';
-    var value               = ''; 
-    var part_start          = '';
-    var part_end            = '';
-    var start_date_hour     = '';
-    var end_date_hour       = '';
-    var result              = [];
-
-    fs.readFile(ical_file, function(err, data)
+function getDateHour(strStplit, beginParam, endParam)
+{
+    var my_date = '';
+    for(i = beginParam; i < endParam; i++)
     {
-        if(err) throw err;
+        my_date += strStplit[i];
+    }
+    return my_date;
+}
 
+function icalToJson(ical_file){    
+        var results             = [];   
+        var data = fs.readFileSync(ical_file);
         var text                = data.toString();
-        var SplitEvent          = text.split('BEGIN:VEVENT');
-        function getDateHour(strStplit, beginParam, endParam)
-        {
-            var my_date = '';
-            for(i = beginParam; i < endParam; i++)
-            {
-                my_date += strStplit[i];
-            }
-            return my_date;
-        }
-        
+        var SplitEvents         = text.split('BEGIN:VEVENT');
+        var lines               = '';
+        var parts               = '';
+        var attribute           = '';
+        var value               = ''; 
+        var part_start          = '';
+        var part_end            = '';
+        var start_date_hour     = '';
+        var end_date_hour       = '';
 
-        SplitEvent.forEach(function (SplitEvent)
+        for(var i = 0; i < SplitEvents.length ; i++)
         {
-
+            SplitEvent = SplitEvents[i];
             var eventCalendar   = 
             {
                 allDay              : false,
@@ -47,10 +49,11 @@ var icalToJson = function(ical_file){
                 textColor           : '#FFFFFF'
 
             };
-
-            line = SplitEvent.split('\n');
-            line.forEach(function (line)
+            lines = SplitEvent.split('\n');
+            for(var j = 0; j < lines.length ; j ++)
             {
+                line = lines[j];                
+
                 parts       = line.split(':');
                 attribute   = parts[0];
                 value       = parts[1];
@@ -93,13 +96,14 @@ var icalToJson = function(ical_file){
                         eventCalendar.end = end_date_hour.toString().trim();
                         break;
                     case 'END':
-                        result.push(eventCalendar);
+                        results.push(eventCalendar);
                         break;
                 }
-            }); 
-        });
-    });
-    return JSON.stringify(result);
+            
+            }
+            
+        }
+    return JSON.stringify(results);
 }
 
 Object.size = function(arr) 
@@ -124,10 +128,8 @@ var connection = mysql.createConnection({
 connection.connect(function(err){
     if(err != null) console.log(err);
 }); 
-
 // SQL Request
 var sql = 'SELECT code FROM habilitationCode';
-
 connection.query(sql, function(err, rows){
     if(err != null) {
         res.end("Query error: " + err)
@@ -162,14 +164,14 @@ connection.query(sql, function(err, rows){
                         var date = new Date();
                         var fd = fs.createWriteStream(__dirname + "/tmp/tmpcalendar" + i + '.ics');
                         res.pipe(fd).on('finish', function(){
-                            // var jsonFeed = icalToJson(__dirname + "/tmp/tmpcalendar" + i + ".ics");
-                            // fs.writeFile(__dirname + '/json/json_' + rows[i].code, 
-                            //     jsonFeed, function(err){
-                            //         if (err) throw err;
-                            //         console.log('json_' + rows[i].code + ' It\'s saved!');
-                            //     })
-                            console.log(icalToJson(__dirname + "/tmp/tmpcalendar" + i + ".ics"));
-                            console.log("Finish");
+                            var jsonFeed = icalToJson(__dirname + "/tmp/tmpcalendar" + i + ".ics");
+                            fs.writeFile(__dirname + '/json/json_' + rows[i].code + '.json', 
+                                jsonFeed, function(err){
+                                    if (err) throw err;
+                                    console.log('json_' + rows[i].code + ' It\'s saved!');
+                                })
+                            // console.log(icalToJson(__dirname + "/tmp/tmpcalendar" + i + ".ics"));
+                            console.log("Create json for " + rows[i].code);
                         });
                         console.log("Download " + rows[i].code + " DONE");                        
                     });
@@ -188,3 +190,5 @@ connection.query(sql, function(err, rows){
         }
     }
 });
+
+return 0;
