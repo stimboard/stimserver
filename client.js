@@ -8,8 +8,8 @@ var client = new net.Socket();
 client.connect(PORT, HOST, function() {
 	console.log('CONNECTED TO: ' + HOST + ':' + PORT);
 	// Write a message to the socket as soon as the client is connected, the server will receive it as message from the client 
-	client.write('{"id": {"stnb": "29000628"}}', 'UTF-8', function(){
-		console.log("done");
+	client.write('29000628', 'UTF-8', function(){
+		console.log("Data has been sended ...");
 	});
 });
 

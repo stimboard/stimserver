@@ -98,19 +98,18 @@ function parseICS(ical_file){
 			}
 			
 		}
-		
 	return JSON.stringify(results);
 }
 
-		function getDateHour(strStplit, beginParam, endParam)
-		{
-			var my_date = '';
-			for(i = beginParam; i < endParam; i++)
-			{
-				my_date += strStplit[i];
-			}
-			return my_date;
-		}
+function getDateHour(strStplit, beginParam, endParam)
+{
+	var my_date = '';
+	for(i = beginParam; i < endParam; i++)
+	{
+		my_date += strStplit[i];
+	}
+	return my_date;
+}
 
 		
 // console.log(results);
