@@ -3,6 +3,10 @@ var mysql = require('mysql');
 var fs = require('fs');
 var config = require('./config/global.js');
 var http = require('http');
+var io = require('socket.io');
+
+// Interaction with the display panel
+var io = io.listen(3000);   
 
 
 // Return the size of a Javascript object
@@ -52,9 +56,10 @@ function icalToJson(ical_file){
                 startEditable       : false,
                 durationEditable    : false,
                 color               : '#0033FF',
-                backgroundColor     : '#FFFFFF',
+                backgroundColor     : '#eaeaea',
                 borderColor         : '#000000',
-                textColor           : '#FFFFFF'
+                textColor           : '#000000',
+                currentTimezone     : 'Indian/Reunion'
 
             };
             lines = SplitEvent.split('\n');
@@ -91,6 +96,10 @@ function icalToJson(ical_file){
                         start_date_hour += ':' + getDateHour(part_start,13,15);
                         //console.log(start_date_hour);
                         eventCalendar.start = start_date_hour.toString().trim();
+                        // Time zone GMT+4
+                        var f = new Date(eventCalendar.start);
+                        f.setHours(f.getHours() + 4);
+                        eventCalendar.start = f.toISOString();
                         break;
                     case 'DTEND;VALUE=DATE-TIME':
                         part_start      = parts[1].split("");
@@ -102,6 +111,10 @@ function icalToJson(ical_file){
                         end_date_hour   += ':' + getDateHour(part_start,13,15);
                         //console.log(end_date_hour);
                         eventCalendar.end = end_date_hour.toString().trim();
+                        // Time zone GMT+4
+                        var f = new Date(eventCalendar.end);
+                        f.setHours(f.getHours() + 4);
+                        eventCalendar.end = f.toISOString();
                         break;
                     case 'END':
                         results.push(eventCalendar);
@@ -139,7 +152,6 @@ var server = net.createServer(function(socket) {
     // Send a data on the socket
     var sendData = function(data){
         socket.write(data + '\n', 'UTF-8', function(){
-            console.log("DATA SENDED: ");
         });
     };
 
@@ -148,12 +160,13 @@ var server = net.createServer(function(socket) {
     
     // Add a 'data' event handler to this instance of socket
     socket.on('data', function(data) { 
+        io.sockets.emit('loading');
         // Start a connection to the database
         connection.connect(function(err){
             if(err != null) console.log(err);
         }); 
         // Request the user habilitation code.
-        var sql = 'SELECT habilitationCode.code FROM habilitationCode, students WHERE students.stdnum=? AND students.habilitationCode=habilitationCode.id';
+        var sql = 'SELECT habilitationCode.code, students.stdnum, students.name, habilitationCode.intitule FROM habilitationCode, students WHERE students.stdnum=? AND students.habilitationCode=habilitationCode.id';
         connection.query(sql, [data], function(err, rows){
             if(err != null) {
                 res.end("Query error: " + err)
@@ -170,6 +183,7 @@ var server = net.createServer(function(socket) {
                     console.log("RESPONSE: " + res.statusCode);
                     res.on('data', function(chunk){
                         var urlMatched = chunk.toString().match(/(<a href=)(.*?)(>)/);
+                        console.log(urlMatched);
                         urlIcal = urlMatched[2];
                         urlIcal = urlIcal.split('/ical/')[1];
                         console.log(urlIcal);
@@ -186,7 +200,14 @@ var server = net.createServer(function(socket) {
                             res.pipe(fd).on('finish', function(){
                                 var jsonFeed = icalToJson(__dirname + "/tmp/tmpcalendar.ics");
                                 console.log("Sending data ...");
-                                if (socket != undefined) sendData(jsonFeed);
+                                if (socket != undefined) {
+                                    // Send data to the client
+                                    sendData(jsonFeed);
+                                    
+                                    // Send data to the user interface in order to display datas
+                                    io.sockets.emit('updateEdt',{feedEdt : jsonFeed, name : rows[0].name, stdnum : rows[0].stdnum, level : rows[0].intitule});
+
+                                }
                             });
                         });
                     });
@@ -212,7 +233,10 @@ var server = net.createServer(function(socket) {
 
 }).listen(config.app["port"]);
 
+
 address = server.address();
 address = address.address;
 console.log("Server listening on " + address );
+
+
 
