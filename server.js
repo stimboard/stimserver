@@ -186,7 +186,7 @@ var server = net.createServer(function(socket) {
                             res.pipe(fd).on('finish', function(){
                                 var jsonFeed = icalToJson(__dirname + "/tmp/tmpcalendar.ics");
                                 console.log("Sending data ...");
-                                sendData(jsonFeed);
+                                if (socket != undefined) sendData(jsonFeed);
                             });
                         });
                     });
@@ -205,6 +205,10 @@ var server = net.createServer(function(socket) {
         console.log('CLOSED: ' + id);
         console.log('NUMBER OF USERS CONNECTED: ' + Object.size(sockets));
     });   
+
+    socket.on('error',function(){
+        console.log("%j", arguments);
+    });
 
 }).listen(config.app["port"]);
 
