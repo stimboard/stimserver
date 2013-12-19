@@ -3,7 +3,7 @@ Stimboard - Partie Serveur
 
 ###Présentation
 Stimboard est un projet proposé par Dr. Yassine Gangat. 
-Dans un périmètre physique défini autour d'un panneau d'affichage, permettre à tout étudiants équipé d'un outil de communication personnel, comme un téléphone portable ou une tablette, d'accéder implicitement à des informations personnalisé le concernant (Emploi du temps, convocation, notes ...)
+Dans un périmètre physique défini autour d'un panneau d'affichage, permettre à tout étudiants équipé d'un outil de communication personnel, comme un téléphone portable ou une tablette, d'accéder implicitement à des informations personnalisées le concernant (Emploi du temps, convocation, notes ...)
 
 
 ###Le serveur
