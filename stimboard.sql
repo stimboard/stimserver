@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Sam 14 Décembre 2013 à 15:47
+-- Généré le: Jeu 19 Décembre 2013 à 10:29
 -- Version du serveur: 5.6.12
 -- Version de PHP: 5.4.17
 
@@ -19,6 +19,31 @@ SET time_zone = "+00:00";
 --
 -- Base de données: `stimboard`
 --
+CREATE DATABASE IF NOT EXISTS `stimboard` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `stimboard`;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `habilitationCode`
+--
+
+DROP TABLE IF EXISTS `habilitationCode`;
+CREATE TABLE IF NOT EXISTS `habilitationCode` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) NOT NULL,
+  `intitule` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Contenu de la table `habilitationCode`
+--
+
+INSERT INTO `habilitationCode` (`id`, `code`, `intitule`) VALUES
+(1, '2283', 'ESIROI-IT3'),
+(2, '2282', 'ESIROI-IT2'),
+(3, '2281', 'ESIROI-IT1');
 
 -- --------------------------------------------------------
 
