@@ -12,7 +12,7 @@ Ce serveur se base sur l'utilisation de sockets TCP pour recevoir et envoyer des
 
 L'équipe serveur se compose de :
 	
-- Fonentsoa Maurica
+- Fonenantsoa Maurica
 - Emmanuel Leveneur
 - Herilaza Rakotomanana
 - Romain Virama-Latchoumy
